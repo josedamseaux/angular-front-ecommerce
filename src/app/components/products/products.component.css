@@ -1,0 +1,24 @@
+
+.productDiv{
+    text-align: center;
+}
+
+.card{
+    border-color: transparent;
+    text-align: center;
+
+}
+
+.productImg{
+    width: 200px;
+}
+
+#toggleSessionError{
+  display: none;
+}
+
+.loginDueTokenError{
+  background-color: transparent;
+  border-color: transparent;
+  margin-bottom:10px;
+}

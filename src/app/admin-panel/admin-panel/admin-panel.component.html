@@ -1,0 +1,190 @@
+<div class="container mt-5">
+  <h2>ADMIN PANEL</h2>
+</div>
+
+<div class="container mt-4">
+  <h3>ADD PRODUCT</h3>
+  <form #productForm="ngForm" (submit)="submitProduct(productForm)">
+    <div class="mb-3">
+      <label for="productName" class="form-label">Product Name</label>
+      <input type="text" class="form-control" name="productName" [(ngModel)]="product.productName" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <input type="text" class="form-control" name="description" [(ngModel)]="product.description" required>
+    </div>
+    <div class="mb-3">
+      <label for="price" class="form-label">Total Amount</label>
+      <input type="number" class="form-control" name="price" [(ngModel)]="product.price" required>
+    </div>
+    <div class="mb-3">
+      <label for="quantity" class="form-label">Quantity</label>
+      <input type="number" class="form-control" name="quantity" [(ngModel)]="product.quantity" required>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Product Image</label>
+      <input *ngIf="filesAdded != 6" type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" required>
+      <p>files added {{filesAdded}}</p>
+      <p style="color: red;"> {{maxFilesLimitReached}}</p>
+      <div>
+
+      </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+</div>
+
+<div class="container mt-5">
+  <h3>PRODUCT LIST</h3>
+
+  <div class="row">
+
+    <div *ngFor="let img of response" class="col-md-4 mb-4">
+      <div class="card custom-card">
+        <div id="carouselExample" class="carousel slide">
+          <div class="carousel-inner">
+            <div *ngFor="let image of img.imges; let i = index" class="carousel-item" [ngClass]="{ 'active': i == 0 }">
+              <img [src]="image" class="d-block w-100" alt="...">
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+
+
+         <!-- <div *ngFor="let image of img.imges">
+            <img [src]="image" class="card-img-top img-fluid" style="height: 220px;" alt="Product Image">
+          </div> -->
+        <!-- <img [src]="img.imges[0]" class="card-img-top img-fluid" style="height: 220px;" alt="Product Image"> -->
+
+        <div class="card-body">
+          <h5 class="card-title">Product Name</h5>
+          <p class="card-text">{{ img.description }}</p>
+          <button class="btn btn-danger" (click)="deleteItem(img)">ELIMINAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="container">
+          Search Clients
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" id="searchInput" placeholder="Enter name or email"
+                [(ngModel)]="searchValue" name="searchInput" (keyup)="onKey($event)">
+            </div>
+            <button (click)="findUserAndPurchases()" class="btn btn-primary mt-2">Search</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <div *ngFor="let user of usersData.users; let i = index">
+            <li (click)="clickOnUser(user)">
+              {{user.firstName}}{{user.lastName}}
+            </li>
+          </div>
+          <div class="pagination">
+            <button *ngFor="let pageNumber of getPageNumbers()" (click)="goToPage(pageNumber)">
+              {{ pageNumber }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <br>
+      <h5 *ngIf="userFound">User info:</h5>
+      <div *ngFor="let users of userFound" class="user-container">
+        <h5>{{ users.firstName }}
+          <br>
+          {{ users.lastName }}
+          <br>
+          {{ users.email }}
+        </h5>
+        <ng-container *ngIf="userPurchases.length !== 0; else noPurchases">
+          <div *ngFor="let purchases of userPurchases" class="user-container">
+            ID: {{purchases.id}}
+            <br>
+            ADDRESS: {{purchases.shippingAddress}}
+            <br>
+            SHIPPING STATUS: {{purchases.shippingStatus}}
+            <br>
+            PAYMENT STATUS: {{purchases.status}}
+            <br>
+            <div *ngFor="let product of purchases.products">
+              {{ product }}
+            </div>
+            <br>
+            TOTAL: {{purchases.total}}
+          </div>
+        </ng-container>
+        <ng-template #noPurchases>
+          <p>No purchases yet</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <h3>ADD COUPON</h3>
+  <form #couponForm="ngForm" (submit)="submitCoupon(couponForm)">
+
+    <div class="mb-3">
+      <label for="productName" class="form-label">Coupon Name</label>
+      <input type="text" class="form-control" name="couponName" [(ngModel)]="coupon.name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Code</label>
+      <input type="text" class="form-control" name="couponCode" [(ngModel)]="coupon.code" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="discountPercentage" class="form-label">discountPercentage</label>
+      <input type="text" class="form-control" name="couponDiscountPercentage" [(ngModel)]="coupon.discountPercentage" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="quantity" class="form-label">discountAmount</label>
+      <input type="number" class="form-control" name="quantity" [(ngModel)]="coupon.discountAmount" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="quantity" class="form-label">maxUsesPerUser</label>
+      <input type="number" class="form-control" name="quantity" [(ngModel)]="coupon.maxUsesPerUser" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="isActive" class="form-label">Is active</label>
+      <input type="checkbox" class="form-check-input" id="isActive" name="isActive" [(ngModel)]="coupon.isActive">
+    </div>
+
+    <div class="mb-3">
+      <label for="eligibleProducts" class="form-label">Eligible Products</label>
+      <input type="text" class="form-control" id="eligibleProducts" name="eligibleProducts" [(ngModel)]="coupon.eligibleProducts">
+    </div>
+
+    <div class="mb-3">
+      <label for="expirationDate" class="form-label">Expiration Date</label>
+      <input type="date" class="form-control" id="expirationDate" name="expirationDate" [(ngModel)]="coupon.expirationDate">
+    </div>
+
+    <div class="mb-3">
+      <label for="uses" class="form-label">Uses</label>
+      <input type="number" class="form-control" id="uses" name="uses" [(ngModel)]="coupon.uses">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+</div>

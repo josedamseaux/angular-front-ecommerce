@@ -1,26 +1,35 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, Subject, catchError, tap, throwError } from 'rxjs';
+import { Injectable, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, catchError, map, tap, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { UserInterface } from '../interfaces/user.interface';
 import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit {
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
 
   private usernameSubject = new Subject<string>();
-
   username$ = this.usernameSubject.asObservable();
 
-constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) {}
-  
+  // TOKEN EXPIRED SESSION
+  private isLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isLogged$ = this.isLogged.asObservable()
+
   urlLogin = 'http://localhost:8000/api/auth/login';
   urlRegister = 'http://localhost:8000/api/users/register';
   urlLogout = 'http://localhost:8000/api/auth/logout';
-  
+
+  constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) { }
+
+  ngOnInit(): void {
+    this.isUserLogged()
+  }
+
+
+
   login(user: any): Observable<any> {
     return this.http.post(this.urlLogin, user);
   }
@@ -44,11 +53,11 @@ constructor(private http: HttpClient, private cookieService: CookieService, priv
 
   emitUsername(user: any) {
     const refreshToken = this.getRefreshToken();
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${refreshToken}`
-      });
-  // Aca hacer un get para obtener el primer nombre en el back
-    this.http.get(`http://localhost:8000/api/users/get-by-email/${user}`, { headers }).subscribe((resp: any)=>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${refreshToken}`
+    });
+    // Aca hacer un get para obtener el primer nombre en el back
+    this.http.get(`http://localhost:8000/api/users/get-by-email/${user}`, { headers }).subscribe((resp: any) => {
       console.log(resp)
       this.usernameSubject.next(resp.firstName);
       localStorage.setItem('username', resp.firstName); // Almacenar en localStorage
@@ -70,20 +79,59 @@ constructor(private http: HttpClient, private cookieService: CookieService, priv
   }
 
   logout() {
-    const accessToken = this.cookieService.get(this.refreshTokenKey);
+    const refreshTokenKey = this.cookieService.get(this.refreshTokenKey);
     localStorage.removeItem('username');
-    if (accessToken) {
+    if (refreshTokenKey) {
       const headers = new HttpHeaders({
-        'Authorization': `Bearer ${accessToken}`
+        'Authorization': `Bearer ${refreshTokenKey}`
       });
       this.clearTokens();
-      this.http.get(this.urlLogout, { headers })
+      this.http.get(this.urlLogout, { headers }).subscribe(resp => {
+        console.log(resp)
+      })
     }
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
-      this.router.navigateByUrl('/home')
-      return throwError(() => new Error('No se encontró el token de acceso'));
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+
+    this.router.navigateByUrl('/home')
+    localStorage.clear();
+    return throwError(() => new Error('No se encontró el token de acceso'));
   }
+
+  isUserLogged(): Observable<boolean> {
+    let userJSON = localStorage.getItem('userInfo');
+    if (!userJSON) {
+      throw new Error('No user detected');
+    } else {
+      const user = JSON.parse(userJSON);
+      const username = user.username;
+      return this.http.post('http://localhost:8000/api/auth/is-logged', { username }).pipe(
+        map((resp: any) => {
+          console.log(resp);
+          return !!resp; // Convertimos la respuesta a un booleano
+        })
+      );
+    }
+  }
+
+  forExpirationOfToken(): boolean {
+    let userJSON: any = localStorage.getItem('userInfo');
+    if (!userJSON) {
+      throw new Error('No user detected');
+    }
+    else {
+      const user = JSON.parse(userJSON);
+      const username = user.username;
+      console.log(username)
+      this.http.post('http://localhost:8000/api/auth/expire-token', { username }).subscribe(resp => {
+        console.log(resp)
+      })
+      return true
+    }
+  }
+
+
 
 }

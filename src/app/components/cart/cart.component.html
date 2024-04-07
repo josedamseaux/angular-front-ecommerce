@@ -1,0 +1,47 @@
+<div class="container">
+
+  <p> {{messageForPayment}}</p>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div *ngFor="let product of productsInCart; let i = index">
+        <div class="productCard">
+          <img [src]="product.imges[0]" alt="Product Image" class="productImage">
+        </div>
+        <div class="productCard">
+          <div>
+            <p class="card-title">{{ product.product_product_name}}</p>
+            <p class="card-text">{{ product.product_price}} € </p>
+            <button (click)="deleteFromCart(product)" class="buttonCart">X</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="summary-container">
+        <p>TOTAL {{  shoppingCartTotal }} €</p>
+
+        <form>
+          <label for="direccion">Dirección de Envío:</label>
+          <input type="text" class="input" id="direccion" name="direccion" [(ngModel)]="shippingInfo.direccion">
+          <br>
+          <label for="ciudad">Ciudad:</label>
+          <input type="text" class="input" id="ciudad" name="ciudad" [(ngModel)]="shippingInfo.ciudad">
+          <br>
+
+          <label for="codigoPostal">Código Postal:</label>
+          <input type="text" class="input" id="codigoPostal" name="codigoPostal" [(ngModel)]="shippingInfo.codigoPostal">
+          <br>
+
+          <label for="codigoPostal">Información adicional:</label>
+          <input type="text" class="input" id="additionalInfo" name="additionalInfo" [(ngModel)]="additionalInfo.additionalInfo">
+          <br>
+          <div class="payment-section">
+            <button class="payButton" (click)="payWithStripe()">PAGAR</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>

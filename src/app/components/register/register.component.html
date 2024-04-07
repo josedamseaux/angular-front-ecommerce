@@ -1,0 +1,14 @@
+<div class="register">
+  <form #productForm="ngForm" class="custom-form" >
+    <h1>Sign up</h1>
+    <input type="text" name="firstName" [(ngModel)]="user.firstName" required placeholder="First name">
+    <input type="text" name="lastName" [(ngModel)]="user.lastName" required placeholder="Last name">
+    <input type="number" name="age" [(ngModel)]="user.age" placeholder="Age (optional)">
+    <input type="text" name="email" [(ngModel)]="user.email" required placeholder="Email">
+    <input type="text" name="username" [(ngModel)]="user.username" required placeholder="Username">
+    <input type="text" name="password" [(ngModel)]="user.password" required placeholder="Password"> 
+    <input type="text" name="lastName" [(ngModel)]="confirmPassword" required placeholder="Confirm password">
+    <button (click)="register()">Enviar</button>
+  </form>
+</div>
+

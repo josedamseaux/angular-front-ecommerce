@@ -1,0 +1,31 @@
+.productCard{
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  text-align: center;
+}
+
+.productImage {
+  width: 200px;
+}
+
+.buttonCart {
+  background-color: transparent;
+  border-color: transparent;
+  margin-bottom: 10px;
+}
+
+.input{
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
+.payment-section{
+  margin-top: 50px;
+}
+
+.payButton{
+  background-color: transparent;
+  border-color: transparent;
+  margin-bottom: 10px;
+}

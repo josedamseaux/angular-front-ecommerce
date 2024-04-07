@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row">
+    <ng-container *ngFor="let product of products; let i = index">
+      <div class="productDiv col-md-6">
+        <div class="card">
+          <div class="justify-content-center">
+            <img [src]="product.imges[0]" alt="Product Image" class="productImg">
+          </div>
+          <button href="#" class="btn btn-black" (click)="nextImage(product)">NEXT IMAGE</button>
+            <div class="card-body">
+            <h5 class="card-title">{{ product.product_product_name }}</h5>
+            <p class="card-text">{{ product.product_description }}</p>
+            <p class="card-text">{{ product.product_price }} € </p>
+            <button href="#" class="btn btn-black" (click)="addToCart(product)">ADD TO CART</button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" id="toggleSessionError" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <p class="modal-title" id="exampleModalLabel">Modal title</p> -->
+      </div>
+      <div class="modal-body">
+        session expired
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="loginDueTokenError" data-bs-dismiss="modal">login</button>
+      </div>
+    </div>
+  </div>
+</div>

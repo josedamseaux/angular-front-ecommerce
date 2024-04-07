@@ -1,0 +1,85 @@
+<header class="section-header">
+  <nav class="navbar navbar-dark navbar-expand p-0 bg-dark">
+    <div class="container-fluid">
+      <ul class="navbar-nav d-none d-md-flex mr-auto">
+        <li class="nav-item"><a class="nav-link" href="#" data-abc="true" routerLink="/home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-abc="true">Free Delivery</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-abc="true">Cash Backs</a></li>
+      </ul>
+      <ul class="navbar-nav d-flex align-items-center">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <span>Hola, {{user}}!</span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li *ngIf="!isLoggedIn"><a class="dropdown-item" (click)="logIn()">Login</a></li>
+            <li *ngIf="isLoggedIn"><a class="dropdown-item" href="#">My profile</a></li>
+            <li><a class="dropdown-item" (click)="shoppingCart()">My shopping cart</a></li>
+            <li><a class="dropdown-item" (click)="isLogged()">IsLOgged</a></li>
+            <li><a class="dropdown-item" (click)="forceExpiration()">forceExpiration</a></li>
+
+            <li *ngIf="isLoggedIn"><a class="dropdown-item" (click)="logOut()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="header-main border-bottom bg-white">
+    <div class="container-fluid">
+      <div class="row p-2 pt-3 pb-3 d-flex align-items-center">
+        <div class="col-md-2">
+          <!-- <img class="d-none d-md-flex" src="https://i.imgur.com/R8QhGhk.png" width="100"> -->
+        </div>
+        <div class="col-md-8">
+          <div class="d-flex form-inputs">
+            <input class="form-control" type="text" placeholder="Search any product...">
+            <i class="bx bx-search"></i>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="d-flex d-none d-md-flex flex-row align-items-center">
+            <span class="shop-bag">
+              <img src="../../../assets/cart.png" alt="" class="shoppingCartImg" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            </span>
+            <div class="d-flex flex-column ms-2 ">
+              <span class="qty">{{shoppingCartCount}} products</span>
+              <span class="fw-bold">{{shoppingCartTotal}} €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</header>
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <p class="totalSideCart">{{shoppingCartTotal}}€ total</p>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <div class="container">
+      <div *ngFor="let product of productsInCart; let i = index;">
+        <div class="offcanvasCard">
+          <img [src]="product.imges[0]" alt="Product Image" class="offcanvasCardImg">
+          <!-- <button href="#" class="btn btn-danger" (click)="deleteFromCart(product)">ELIMINAR</button> -->
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text">{{ product.product_price}} € </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button data-bs-dismiss="offcanvas" class="buttonSideCart" (click)="shoppingCart()">go to cart</button>
+</div>
